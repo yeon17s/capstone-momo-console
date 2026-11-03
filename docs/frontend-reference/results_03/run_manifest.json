@@ -1,0 +1,30 @@
+{
+  "data": "C:\\Users\\dream\\Downloads\\voraus-ad-dataset-analysis\\voraus-ad-dataset-100hz.parquet",
+  "data_bytes": 1115942833,
+  "source_rows": 2321690,
+  "selected_rows": 1820085,
+  "selected_cycles": 1667,
+  "normal_cycles": 1367,
+  "pre_a_cycles": 948,
+  "points": 60,
+  "bootstrap": 1000,
+  "seed": 20261015,
+  "versions": {
+    "python": "3.13.15",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "pyarrow": "26.0.0",
+    "matplotlib": "3.11.2"
+  },
+  "reference": "https://github.com/vorausrobotik/voraus-ad-dataset/blob/main/voraus_ad.py",
+  "notes": [
+    "Descriptive EDA only; cycle bootstrap assumes independent cycles.",
+    "Intervals unadjusted for multiple comparisons; no prediction performance claim.",
+    "motor_iq is not equivalent to DC robot current; no summation/conversion.",
+    "All cycles used for statistics and alignment; no first-N selection.",
+    "Action alignment splits consecutive action+active runs and keeps visit number.",
+    "Bands represent 10-90% cycle spread, not confidence intervals.",
+    "Signed position/velocity differences assume matching target/feedback coordinates.",
+    "Feature summaries are sample-weighted; duration is preserved separately."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "created_utc": "2026-10-15T05:25:27.741189+00:00",
+  "config": {
+    "seed": 20261015,
+    "normal_validation_fraction": 0.25,
+    "target_validation_fpr": 0.05,
+    "active_actions": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13
+    ],
+    "algorithms": [
+      "statistical",
+      "isolation_forest",
+      "pca"
+    ],
+    "feature_sets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "representations": [
+      "cycle",
+      "action"
+    ],
+    "iforest_trees": 200,
+    "iforest_max_samples": 256,
+    "pca_explained_variance": 0.95,
+    "minimum_feature_variance": 1e-12,
+    "paired_bootstrap_repeats": 300
+  },
+  "config_sha256": "3840439d6cbd275f75c4186a0cda85d8b29067e71ece61ad4973593ba497ef29",
+  "data": "C:\\Users\\dream\\Downloads\\voraus-ad-dataset-analysis\\voraus-ad-dataset-100hz.parquet",
+  "data_bytes": 1115942833,
+  "data_mtime_ns": 1792034944630322800,
+  "official_source_sha256": "be1571476a0d4caa2006e1ecc77c37b710516ebeee275d30edf9812eb52333d2",
+  "code_sha256": {
+    "baseline_core.py": "e634f25904cf9fa8580e5ddd68eaf8ed959ad9c9e9ace42fc7fd0bb634eea1b7",
+    "05_baseline_experiments.py": "1604095a2a6ec82281bf2bca2a231c4e9ea250decb3de4bb4907995247ffd231"
+  },
+  "evaluation_status": "Retrospective official outer split reference; previously explored by EDA. NOT final independent validation.",
+  "timing": "Cycle-end features; action-end features conditional on externally known task state. No early-detection metric.",
+  "versions": {
+    "python": "3.13.15",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.1",
+    "pyarrow": "26.0.0"
+  }
+}

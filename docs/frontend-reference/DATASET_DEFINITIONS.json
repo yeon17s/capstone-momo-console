@@ -1,0 +1,428 @@
+{
+  "Category": [
+    {
+      "value": 0,
+      "name": "AXIS_FRICTION"
+    },
+    {
+      "value": 1,
+      "name": "AXIS_WEIGHT"
+    },
+    {
+      "value": 2,
+      "name": "COLLISION_FOAM"
+    },
+    {
+      "value": 3,
+      "name": "COLLISION_CABLE"
+    },
+    {
+      "value": 4,
+      "name": "COLLISION_CARTON"
+    },
+    {
+      "value": 5,
+      "name": "MISS_CAN"
+    },
+    {
+      "value": 6,
+      "name": "LOSE_CAN"
+    },
+    {
+      "value": 7,
+      "name": "CAN_WEIGHT"
+    },
+    {
+      "value": 8,
+      "name": "ENTANGLED"
+    },
+    {
+      "value": 9,
+      "name": "INVALID_POSITION"
+    },
+    {
+      "value": 10,
+      "name": "MOTOR_COMMUTATION"
+    },
+    {
+      "value": 11,
+      "name": "WOBBLING_STATION"
+    },
+    {
+      "value": 12,
+      "name": "NORMAL_OPERATION"
+    }
+  ],
+  "Variant": [
+    {
+      "value": 0,
+      "name": "A1_A"
+    },
+    {
+      "value": 1,
+      "name": "A1_B"
+    },
+    {
+      "value": 2,
+      "name": "A2_A"
+    },
+    {
+      "value": 3,
+      "name": "A2_B"
+    },
+    {
+      "value": 4,
+      "name": "A3_A"
+    },
+    {
+      "value": 5,
+      "name": "A3_B"
+    },
+    {
+      "value": 6,
+      "name": "A3_C"
+    },
+    {
+      "value": 7,
+      "name": "A4_A"
+    },
+    {
+      "value": 8,
+      "name": "A4_B"
+    },
+    {
+      "value": 9,
+      "name": "A4_C"
+    },
+    {
+      "value": 10,
+      "name": "A5_A"
+    },
+    {
+      "value": 11,
+      "name": "A5_B"
+    },
+    {
+      "value": 12,
+      "name": "A6_A"
+    },
+    {
+      "value": 13,
+      "name": "A6_B"
+    },
+    {
+      "value": 14,
+      "name": "A1_115G"
+    },
+    {
+      "value": 15,
+      "name": "A1_231G"
+    },
+    {
+      "value": 16,
+      "name": "A1_500G"
+    },
+    {
+      "value": 17,
+      "name": "A2_500G"
+    },
+    {
+      "value": 18,
+      "name": "A2_231G"
+    },
+    {
+      "value": 19,
+      "name": "A2_115G"
+    },
+    {
+      "value": 20,
+      "name": "A3_115G"
+    },
+    {
+      "value": 21,
+      "name": "A3_231G"
+    },
+    {
+      "value": 22,
+      "name": "A3_500G"
+    },
+    {
+      "value": 23,
+      "name": "A4_500G"
+    },
+    {
+      "value": 24,
+      "name": "A4_231G"
+    },
+    {
+      "value": 25,
+      "name": "A4_115G"
+    },
+    {
+      "value": 26,
+      "name": "A5_115G"
+    },
+    {
+      "value": 27,
+      "name": "A5_231G"
+    },
+    {
+      "value": 28,
+      "name": "A5_500G"
+    },
+    {
+      "value": 29,
+      "name": "A6_500G"
+    },
+    {
+      "value": 30,
+      "name": "A6_231G"
+    },
+    {
+      "value": 31,
+      "name": "A6_115G"
+    },
+    {
+      "value": 32,
+      "name": "LARGE_FULL"
+    },
+    {
+      "value": 33,
+      "name": "SMALL_FULL"
+    },
+    {
+      "value": 34,
+      "name": "SMALL_STRIPE"
+    },
+    {
+      "value": 35,
+      "name": "SMALL_HANGING_FULL"
+    },
+    {
+      "value": 36,
+      "name": "LARGE_HANGING_FULL"
+    },
+    {
+      "value": 37,
+      "name": "SMALL_HANGING_STRIPE"
+    },
+    {
+      "value": 38,
+      "name": "CONNECTOR_TOP"
+    },
+    {
+      "value": 39,
+      "name": "CONNECTOR_SIDE"
+    },
+    {
+      "value": 40,
+      "name": "LAN"
+    },
+    {
+      "value": 41,
+      "name": "STRIPE"
+    },
+    {
+      "value": 42,
+      "name": "FULL_A"
+    },
+    {
+      "value": 43,
+      "name": "FULL_B"
+    },
+    {
+      "value": 44,
+      "name": "CONVEYOR"
+    },
+    {
+      "value": 45,
+      "name": "NO_VACUUM"
+    },
+    {
+      "value": 46,
+      "name": "DEFECT_GRIPPER_DROP_CAN"
+    },
+    {
+      "value": 47,
+      "name": "DROP_1400MS"
+    },
+    {
+      "value": 48,
+      "name": "DROP_1100MS"
+    },
+    {
+      "value": 49,
+      "name": "DROP_100MS"
+    },
+    {
+      "value": 50,
+      "name": "DROP_200MS"
+    },
+    {
+      "value": 51,
+      "name": "LOSE_200MS"
+    },
+    {
+      "value": 52,
+      "name": "LOSE_300MS"
+    },
+    {
+      "value": 53,
+      "name": "LOSE_PLACE_100MS"
+    },
+    {
+      "value": 54,
+      "name": "DECREASE_95G"
+    },
+    {
+      "value": 55,
+      "name": "DECREASE_165G"
+    },
+    {
+      "value": 56,
+      "name": "EMPTY"
+    },
+    {
+      "value": 57,
+      "name": "INCREASE_242G"
+    },
+    {
+      "value": 58,
+      "name": "INCREASE_373G"
+    },
+    {
+      "value": 59,
+      "name": "INCREASE_407G"
+    },
+    {
+      "value": 60,
+      "name": "CABLE"
+    },
+    {
+      "value": 61,
+      "name": "PICK"
+    },
+    {
+      "value": 62,
+      "name": "A1_HIGH"
+    },
+    {
+      "value": 63,
+      "name": "A1_MEDIUM"
+    },
+    {
+      "value": 64,
+      "name": "A2_MEDIUM"
+    },
+    {
+      "value": 65,
+      "name": "A3_MEDIUM"
+    },
+    {
+      "value": 66,
+      "name": "A4_MEDIUM"
+    },
+    {
+      "value": 67,
+      "name": "A5_MEDIUM"
+    },
+    {
+      "value": 68,
+      "name": "A6_MEDIUM"
+    },
+    {
+      "value": 69,
+      "name": "LOW_DAMPING"
+    },
+    {
+      "value": 70,
+      "name": "MEDIUM_DAMPING"
+    },
+    {
+      "value": 71,
+      "name": "HIGH_DAMPING"
+    },
+    {
+      "value": 72,
+      "name": "PRE_A"
+    },
+    {
+      "value": 73,
+      "name": "PRE_B"
+    },
+    {
+      "value": 74,
+      "name": "BETWEEN_A"
+    },
+    {
+      "value": 75,
+      "name": "BETWEEN_B"
+    },
+    {
+      "value": 76,
+      "name": "BETWEEN_C"
+    }
+  ],
+  "Action": [
+    {
+      "value": 0,
+      "name": "VOID_1"
+    },
+    {
+      "value": 1,
+      "name": "TO_SCAN_PTP"
+    },
+    {
+      "value": 2,
+      "name": "VOID_2"
+    },
+    {
+      "value": 3,
+      "name": "OVER_OBJECT_PTP"
+    },
+    {
+      "value": 4,
+      "name": "VOID_3"
+    },
+    {
+      "value": 5,
+      "name": "DOWN_PICK_LIN"
+    },
+    {
+      "value": 6,
+      "name": "VOID_4"
+    },
+    {
+      "value": 7,
+      "name": "UP_PICK_LIN"
+    },
+    {
+      "value": 8,
+      "name": "VOID_5"
+    },
+    {
+      "value": 9,
+      "name": "TO_PLACE_PTP"
+    },
+    {
+      "value": 10,
+      "name": "VOID_6"
+    },
+    {
+      "value": 11,
+      "name": "DOWN_PLACE_LIN"
+    },
+    {
+      "value": 12,
+      "name": "VOID_7"
+    },
+    {
+      "value": 13,
+      "name": "UP_PLACE_LIN"
+    },
+    {
+      "value": 14,
+      "name": "VOID_8"
+    }
+  ]
+}

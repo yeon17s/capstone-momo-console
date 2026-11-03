@@ -1,0 +1,10 @@
+﻿protocol,fold,category,reason,n_settings,note
+setting,0,5,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,0,8,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,0,9,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,1,5,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,1,8,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,1,9,missing class in outer_test,1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,2,5,"missing class in selection_fit,selection_validation,calibration",1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,2,8,"missing class in selection_fit,selection_validation,calibration",1,single-setting categories cannot estimate unseen-setting same-type performance
+setting,2,9,"missing class in selection_fit,selection_validation,calibration",1,single-setting categories cannot estimate unseen-setting same-type performance

@@ -1,0 +1,17 @@
+{
+  "unittest_tests_executed": 13,
+  "unittest_tests_passed": 13,
+  "png_files_verified": 7,
+  "previous_files_unchanged": 368,
+  "report_sections_verified": 11,
+  "final_summary_table_verified": true,
+  "python": "3.13.15",
+  "numpy": "2.5.4",
+  "pandas": "3.0.6",
+  "sklearn": "1.9.1",
+  "source_sha256": {
+    "08_feature_selection.py": "a5c800013894edf84ac286db54a21ccc8558d387ceece8069f384d3100bff2c8",
+    "feature_selection_report.py": "9ae1667cb969c61ca8a7f8a8a9399f8088c4ba7eb106b9fc1d9ae7701bd7b3a0",
+    "test_feature_selection.py": "8a64a93be1a9421291c639ae8d528a451123cb7ecf4a9b1217988675f830f309"
+  }
+}

@@ -1,28 +1,17 @@
+import { lazy, Suspense } from 'react'
+import { AsyncState } from '../components/common'
+import { XarmSettings } from '../components/settings/XarmSettings'
 import { useSource } from '../context/SourceContext'
-import {
-  AblationCard,
-  DeviceNoticeCard,
-  ExperimentCard,
-  ImportanceCard,
-  XarmSettings,
-} from '../components/settings'
 
-function PublicSettings() {
-  return (
-    <section aria-label="설정 및 분석 확장">
-      <h2>읽기 전용 실험 설정</h2>
-      <p className="section-intro">공개 실험 설정을 확인하는 화면입니다. 값은 변경할 수 없습니다.</p>
-      <div className="grid">
-        <ExperimentCard />
-        <DeviceNoticeCard />
-      </div>
-      <AblationCard />
-      <ImportanceCard />
-    </section>
-  )
-}
+// 공개 평가 화면은 payload.json(약 3.5MB)에 의존하므로 별도 청크로 분리한다.
+const Public = lazy(() => import('./public/PublicSettings'))
 
 export default function SettingPage() {
   const { mode } = useSource()
-  return mode === 'public' ? <PublicSettings /> : <XarmSettings />
+  if (mode !== 'public') return <XarmSettings />
+  return (
+    <Suspense fallback={<AsyncState kind="loading" />}>
+      <Public />
+    </Suspense>
+  )
 }

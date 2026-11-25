@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 import type { CycleRow } from '../types'
-import { resultKey } from '../lib/selectors'
+import { resultKey } from '../lib/resultKey'
 
 const MAX_ITEMS = 2
 

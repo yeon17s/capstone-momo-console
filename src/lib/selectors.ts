@@ -20,8 +20,7 @@ export const scopedRows = (sel: ModelSelection, scope: string): CycleRow[] =>
     (r) => scope === 'all_12' || !r.anomaly || [0, 1].includes(r.category),
   )
 
-export const resultKey = (r: CycleRow) =>
-  [r.sample, r.representation, r.input_set, r.algorithm].join('/')
+export { resultKey } from './resultKey'
 
 export const outcome = (r: CycleRow): string =>
   r.anomaly

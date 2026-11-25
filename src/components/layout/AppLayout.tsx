@@ -1,11 +1,13 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useSource } from '../../context/SourceContext'
-import { ComparePanel } from './ComparePanel'
 import { Footer } from './Footer'
 import { Header } from './Header'
-import { ModelToolbar } from './ModelToolbar'
 import { SourceSwitch } from './SourceSwitch'
+
+// 공개 평가 데이터(payload.json)에 의존하는 UI는 필요할 때만 불러온다.
+const ModelToolbar = lazy(() => import('./ModelToolbar').then((m) => ({ default: m.ModelToolbar })))
+const ComparePanel = lazy(() => import('./ComparePanel').then((m) => ({ default: m.ComparePanel })))
 
 export function AppLayout() {
   const { pathname } = useLocation()
@@ -13,7 +15,7 @@ export function AppLayout() {
   const isPublic = mode === 'public'
 
   useEffect(() => {
-    document.title = `MOmO · ${pathname.slice(1) || 'dashboard'} · Revision 03`
+    document.title = `MOmO · ${pathname.slice(1) || 'dashboard'} · Revision 04`
   }, [pathname])
 
   return (
@@ -34,9 +36,17 @@ export function AppLayout() {
           </div>
         </div>
         <SourceSwitch />
-        {isPublic && <ModelToolbar />}
+        {isPublic && (
+          <Suspense fallback={null}>
+            <ModelToolbar />
+          </Suspense>
+        )}
         <Outlet />
-        {isPublic && <ComparePanel />}
+        {isPublic && (
+          <Suspense fallback={null}>
+            <ComparePanel />
+          </Suspense>
+        )}
         <Footer />
       </main>
     </>

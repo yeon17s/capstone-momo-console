@@ -1,10 +1,10 @@
-const REVISION = '8633e31ad5652279a4daa25273d8cbfe82060e96'
+const REVISION = 'cb1201b'
 const REPO = 'https://github.com/yeon17s/capstone-momo-console'
 
 export function Footer() {
   return (
     <footer>
-      MOmO · Revision 03
+      MOmO · Revision 04
       <br />
       voraus-AD / Yu-Cobot · {REVISION.slice(0, 7)}
       <br />

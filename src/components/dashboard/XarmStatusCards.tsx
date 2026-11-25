@@ -176,7 +176,7 @@ function Cycle_({ r, live }: { r: Cycle; live: boolean }) {
         headers={['구분', '값']}
         rows={[
           ['계획 조건 (condition, 정답 아님)', text(r.condition)],
-          ['실제 확인 여부 (operator.confirmed)', op?.confirmed == null ? '미확정' : String(op.confirmed)],
+          ['실제 확인 여부 (operator.confirmed)', op?.confirmed === true ? '확인됨' : op?.confirmed === false ? '미확정' : '미제공'],
           ['실제 라벨 (operator.label)', text(op?.label)],
           ['결과 (operator.outcome)', text(op?.outcome)],
           [

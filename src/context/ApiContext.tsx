@@ -3,7 +3,7 @@ import { Client } from '../lib/api'
 import type { ConnectionState, CyclesPage, ModelsResponse, StatusResponse } from '../types/api'
 import { useSource } from './SourceContext'
 
-interface ApiContextValue {
+export interface ApiContextValue {
   /** xArm 모드가 아니면 null */
   client: Client | null
   connection: ConnectionState
@@ -17,7 +17,8 @@ interface ApiContextValue {
   error: string | null
 }
 
-const ApiContext = createContext<ApiContextValue | null>(null)
+/** 테스트에서 값을 직접 주입하기 위해 export 한다. 앱 코드는 ApiProvider/useApi 를 사용한다. */
+export const ApiContext = createContext<ApiContextValue | null>(null)
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? ''
 
@@ -32,43 +33,58 @@ interface Snapshot {
 
 const EMPTY: Snapshot = { connection: 'idle', status: null, models: null, cycles: null, refreshCount: 0, error: null }
 
-export function ApiProvider({ children }: { children: ReactNode }) {
-  const { usesApi } = useSource()
-  const [client, setClient] = useState<Client | null>(null)
+/**
+ * 모드(공개 / xArm)가 바뀌면 key 로 다시 마운트해 이전 모드의 상태가 남지 않게 한다.
+ * Client 는 렌더 중에 만들고(생성자는 부수효과 없음) 시작·종료만 effect 에서 한다.
+ */
+function ApiSession({ enabled, children }: { enabled: boolean; children: ReactNode }) {
   const [snap, setSnap] = useState<Snapshot>(EMPTY)
 
+  const client = useMemo(
+    () =>
+      enabled
+        ? new Client({
+            baseURL: API_BASE,
+            onStatus: (status) => setSnap((s) => ({ ...s, status, error: null })),
+            onCycles: (cycles) => setSnap((s) => ({ ...s, cycles })),
+            onModels: (models) => setSnap((s) => ({ ...s, models })),
+            onConnection: (connection) => setSnap((s) => ({ ...s, connection })),
+            onRefreshRequired: () => setSnap((s) => ({ ...s, refreshCount: s.refreshCount + 1 })),
+            onError: (e) => setSnap((s) => ({ ...s, error: e.message })),
+          })
+        : null,
+    [enabled],
+  )
+
   useEffect(() => {
-    if (!usesApi) return
-    // 효과 실행마다 새 Client 를 만들어 StrictMode 의 start/stop/start 경합을 피한다.
-    const c = new Client({
-      baseURL: API_BASE,
-      onStatus: (status) => setSnap((s) => ({ ...s, status, error: null })),
-      onCycles: (cycles) => setSnap((s) => ({ ...s, cycles })),
-      onModels: (models) => setSnap((s) => ({ ...s, models })),
-      onConnection: (connection) => setSnap((s) => ({ ...s, connection })),
-      onRefreshRequired: () => setSnap((s) => ({ ...s, refreshCount: s.refreshCount + 1 })),
-      onError: (e) => setSnap((s) => ({ ...s, error: e.message })),
-    })
-    setClient(c)
-    void c.start()
-    const onHide = () => c.stop()
+    if (!client) return
+    // StrictMode 의 start → stop → start 에서도 Client 의 generation 검사로 스트림이 한 번만 열린다.
+    void client.start()
+    const onHide = () => client.stop()
     // 뒤로가기 캐시(bfcache)에서 복원되면 pagehide 로 멈춘 클라이언트를 다시 시작한다.
     const onShow = (e: PageTransitionEvent) => {
-      if (e.persisted) void c.start()
+      if (e.persisted) void client.start()
     }
     window.addEventListener('pagehide', onHide)
     window.addEventListener('pageshow', onShow)
     return () => {
       window.removeEventListener('pagehide', onHide)
       window.removeEventListener('pageshow', onShow)
-      c.stop()
-      setClient(null)
-      setSnap(EMPTY)
+      client.stop()
     }
-  }, [usesApi])
+  }, [client])
 
   const value = useMemo<ApiContextValue>(() => ({ client, ...snap }), [client, snap])
   return <ApiContext value={value}>{children}</ApiContext>
+}
+
+export function ApiProvider({ children }: { children: ReactNode }) {
+  const { usesApi } = useSource()
+  return (
+    <ApiSession key={usesApi ? 'xarm' : 'public'} enabled={usesApi}>
+      {children}
+    </ApiSession>
+  )
 }
 
 export function useApi() {

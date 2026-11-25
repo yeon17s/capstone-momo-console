@@ -102,3 +102,19 @@ export function buildIndexLine(points: Row[], column: string): Line {
     }),
   }
 }
+
+/** 파형 구간 입력(문자열) → API 파라미터. 빈 값은 제한 없음, 잘못된 값은 오류. */
+export function parseRange(from: string, to: string): { range: { from_s?: number; to_s?: number }; error?: string } {
+  const range: { from_s?: number; to_s?: number } = {}
+  for (const [key, raw, label] of [['from_s', from, '시작'], ['to_s', to, '끝']] as const) {
+    const text = raw.trim()
+    if (!text) continue
+    const v = Number(text)
+    if (!Number.isFinite(v)) return { range: {}, error: `${label} 값이 숫자가 아닙니다.` }
+    range[key] = v
+  }
+  if (range.from_s !== undefined && range.to_s !== undefined && range.from_s > range.to_s) {
+    return { range: {}, error: '시작이 끝보다 큽니다.' }
+  }
+  return { range }
+}

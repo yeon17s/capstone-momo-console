@@ -1,4 +1,5 @@
 import type { Cycle } from '../../types/api'
+import { TextFilter, uniqueValues } from '../common'
 import { PAGE_LIMITS, TRUTH_LABELS, type XarmFilterState } from '../../lib/api/historyFilters'
 
 interface Props {
@@ -11,36 +12,6 @@ interface Props {
   onSearch: (v: string) => void
   /** 현재 페이지 값 — 입력 자동완성용 (필터 값은 목록 값과 정확히 일치해야 한다) */
   items: Cycle[]
-}
-
-function uniqueValues(items: Cycle[], pick: (c: Cycle) => string | null | undefined): string[] {
-  return [...new Set(items.map(pick).filter((v): v is string => !!v))]
-}
-
-function TextFilter({
-  label,
-  value,
-  onChange,
-  options,
-  listId,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  options: string[]
-  listId: string
-}) {
-  return (
-    <label>
-      {label}
-      <input list={listId} value={value} onChange={(e) => onChange(e.target.value)} />
-      <datalist id={listId}>
-        {options.map((o) => (
-          <option key={o} value={o} />
-        ))}
-      </datalist>
-    </label>
-  )
 }
 
 export function XarmHistoryFilters({

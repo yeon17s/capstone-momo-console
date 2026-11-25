@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
-import { useCycleDetail, type CycleDetail } from '../../hooks/useCycleDetail'
+import { useCycleDetail, type CycleDetail, type SeriesRange } from '../../hooks/useCycleDetail'
 import { alarmLabel, numberLabel, typeLabel } from '../../lib/api'
 import { flattenJson } from '../../lib/api/flatten'
-import { buildIndexLine, buildLines, numericColumns, type Row } from '../../lib/api/series'
+import { buildIndexLine, buildLines, numericColumns, parseRange, type Row } from '../../lib/api/series'
 import type { Cycle } from '../../types/api'
 import { LineChart } from '../charts'
 import { AsyncState, Badge, Card, Notice, Table } from '../common'
@@ -40,8 +40,48 @@ function SeriesViewer({ rows, stream }: { rows: Row[]; stream: string }) {
   )
 }
 
-function Waveforms({ detail }: { detail: CycleDetail }) {
-  const { series, loading, error, reload } = detail
+function RangeInputs({ range, onApply }: { range: SeriesRange; onApply: (r: SeriesRange) => void }) {
+  const [from, setFrom] = useState(range.from_s === undefined ? '' : String(range.from_s))
+  const [to, setTo] = useState(range.to_s === undefined ? '' : String(range.to_s))
+  const parsed = parseRange(from, to)
+  return (
+    <div className="subtools" role="group" aria-label="파형 구간 (No.3 시작 기준 초)">
+      <label>
+        시작 (초)
+        <input inputMode="decimal" value={from} onChange={(e) => setFrom(e.target.value)} placeholder="처음" />
+      </label>
+      <label>
+        끝 (초)
+        <input inputMode="decimal" value={to} onChange={(e) => setTo(e.target.value)} placeholder="끝까지" />
+      </label>
+      <button type="button" disabled={!!parsed.error} onClick={() => onApply(parsed.range)}>
+        구간 적용
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setFrom('')
+          setTo('')
+          onApply({})
+        }}
+      >
+        전체
+      </button>
+      {parsed.error && <span role="alert">{parsed.error}</span>}
+    </div>
+  )
+}
+
+function Waveforms({
+  detail,
+  range,
+  onRange,
+}: {
+  detail: CycleDetail
+  range: SeriesRange
+  onRange: (r: SeriesRange) => void
+}) {
+  const { series, seriesLoading: loading, seriesError: error, reload } = detail
   const streams = series ? (Object.keys(series.series) as (keyof typeof series.series)[]) : []
   const [picked, setPicked] = useState('')
   const stream = streams.find((s) => s === picked) ?? streams[0]
@@ -54,6 +94,7 @@ function Waveforms({ detail }: { detail: CycleDetail }) {
           다시 읽기
         </button>
       </Notice>
+      <RangeInputs key={JSON.stringify(range)} range={range} onApply={onRange} />
       {loading && <AsyncState kind="loading" />}
       {error && <AsyncState kind="error">{error}</AsyncState>}
       {series && (
@@ -187,7 +228,8 @@ function Summary({ c }: { c: Cycle }) {
 }
 
 function CompareItem({ id, onRemove }: { id: string; onRemove: () => void }) {
-  const detail = useCycleDetail(id)
+  const [range, setRange] = useState<SeriesRange>({})
+  const detail = useCycleDetail(id, range)
   const { cycle, loading, error } = detail
   return (
     <article className="compare-item">
@@ -200,7 +242,7 @@ function CompareItem({ id, onRemove }: { id: string; onRemove: () => void }) {
       {loading && <AsyncState kind="loading" />}
       {error && <AsyncState kind="error">{error}</AsyncState>}
       {cycle && <Summary c={cycle} />}
-      <Waveforms detail={detail} />
+      <Waveforms detail={detail} range={range} onRange={setRange} />
       <Trends detail={detail} />
     </article>
   )

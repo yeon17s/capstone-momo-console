@@ -200,3 +200,27 @@ describe('Client polling fallback (EventSource 미지원)', () => {
     client.stop()
   })
 })
+
+describe('Client start/stop 경합', () => {
+  it('start → stop → start 를 연달아 호출해도 EventSource 는 하나만 연다', async () => {
+    let created = 0
+    class Counting extends FakeEventSource {
+      constructor(url: string) {
+        super(url)
+        created++
+      }
+    }
+    const { client } = setup()
+    const c2 = new Client({
+      fetchImpl: (client as unknown as { fetchImpl: typeof fetch }).fetchImpl,
+      EventSourceImpl: Counting as never,
+      pollMs: 60000,
+    })
+    const first = c2.start()
+    c2.stop()
+    const second = c2.start()
+    await Promise.all([first, second])
+    expect(created).toBe(1)
+    c2.stop()
+  })
+})

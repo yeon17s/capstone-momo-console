@@ -17,6 +17,7 @@ import type {
   TrendsQuery,
   TrendsResponse,
 } from '../../types/api'
+import { ApiHttpError, networkError, readDetail } from './errors'
 import { cursorTransition } from './labels'
 import { validateCyclesPage, validateModels, validateStatus } from './validate'
 
@@ -97,6 +98,8 @@ export class Client {
   private readonly timeoutMs: number
 
   private opened = false
+  /** start()/stop() 호출마다 증가. 오래된 start()가 늦게 재개되어 스트림을 중복 생성하는 것을 막는다. */
+  private generation = 0
   private conn: ConnectionState = 'closed'
   private stream: EventSource | null = null
   private pollTimer: ReturnType<typeof setInterval> | null = null
@@ -165,14 +168,19 @@ export class Client {
 
   async get<T = unknown>(path: string, query: QueryRecord = {}): Promise<T> {
     return this.withAbort(async (signal) => {
-      const response = await this.fetchImpl(this.url(path, query), {
-        method: 'GET',
-        cache: 'no-store',
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-        signal,
-      })
-      if (!response.ok) throw new Error(`API HTTP ${response.status}: ${path}`)
+      let response: Response
+      try {
+        response = await this.fetchImpl(this.url(path, query), {
+          method: 'GET',
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+          signal,
+        })
+      } catch (e) {
+        throw networkError(e)
+      }
+      if (!response.ok) throw new ApiHttpError(response.status, path, await readDetail(response))
       return (await response.json()) as T
     })
   }
@@ -214,18 +222,23 @@ export class Client {
   async csvInfo(query: CyclesQuery = this.historyQuery): Promise<CsvInfo> {
     const url = this.csvURL(query)
     return this.withAbort(async (signal) => {
-      const response = await this.fetchImpl(url, {
-        method: 'HEAD',
-        cache: 'no-store',
-        credentials: 'same-origin',
-        signal,
-      })
-      if (!response.ok) throw new Error('CSV HTTP ' + response.status)
+      let response: Response
+      try {
+        response = await this.fetchImpl(url, {
+          method: 'HEAD',
+          cache: 'no-store',
+          credentials: 'same-origin',
+          signal,
+        })
+      } catch (e) {
+        throw networkError(e)
+      }
+      if (!response.ok) throw new ApiHttpError(response.status, '/cycles.csv', null)
       const total = response.headers.get('X-Export-Total')
       const rows = response.headers.get('X-Export-Rows')
       const truncated = response.headers.get('X-Export-Truncated')
       if (!/^\d+$/.test(total ?? '') || !/^\d+$/.test(rows ?? '') || !['true', 'false'].includes(truncated ?? '')) {
-        throw new Error('CSV export limits unavailable; do not assume a complete export')
+        throw new Error('CSV 행 수·상한 헤더를 읽을 수 없습니다. 전체 내보내기라고 가정하지 마세요. (CSV export limits unavailable; do not assume a complete export)')
       }
       return { url, total: Number(total), rows: Number(rows), truncated: truncated === 'true' }
     })
@@ -319,12 +332,13 @@ export class Client {
   async start(): Promise<void> {
     if (!this.closed) return
     this.closed = false
+    const generation = ++this.generation
     this.opened = false
     this.cursor = null
     this.lastRevision = undefined
     this.setConn('connecting')
     await this.refresh('initial', true).catch((e) => this.onError(toError(e)))
-    if (this.closed) return
+    if (this.closed || generation !== this.generation) return
     if (this.EventSourceImpl) {
       const stream = new this.EventSourceImpl(this.url('/events'))
       this.stream = stream
@@ -373,6 +387,7 @@ export class Client {
   /** 클라이언트 종료. 로봇 정지 명령이 아니다. */
   stop(): void {
     this.closed = true
+    ++this.generation
     ++this.historyVersion
     ++this.statusVersion
     this.stream?.close()

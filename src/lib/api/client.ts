@@ -97,6 +97,7 @@ export class Client {
   private readonly timeoutMs: number
 
   private opened = false
+  private conn: ConnectionState = 'closed'
   private stream: EventSource | null = null
   private pollTimer: ReturnType<typeof setInterval> | null = null
   private pollInFlight = false
@@ -127,6 +128,16 @@ export class Client {
     this.historyRefreshMs = options.historyRefreshMs ?? 3000
     this.timeoutMs = options.timeoutMs ?? 10000
     this.historyQuery = { limit: 25, offset: 0, ...(options.historyQuery ?? {}) }
+  }
+
+  private setConn(state: ConnectionState) {
+    this.conn = state
+    this.onConnection(state)
+  }
+
+  /** EventSource.OPEN === 1 */
+  private streamOpen(): boolean {
+    return this.stream?.readyState === 1
   }
 
   // ── 요청 ──────────────────────────────────────────────────────────────
@@ -311,7 +322,7 @@ export class Client {
     this.opened = false
     this.cursor = null
     this.lastRevision = undefined
-    this.onConnection('connecting')
+    this.setConn('connecting')
     await this.refresh('initial', true).catch((e) => this.onError(toError(e)))
     if (this.closed) return
     if (this.EventSourceImpl) {
@@ -325,27 +336,33 @@ export class Client {
       })
       stream.onopen = () => {
         if (this.closed) return
-        this.onConnection('connected')
+        this.setConn('connected')
         if (this.opened) this.refresh('SSE_reconnect').catch((e) => this.onError(toError(e)))
         this.opened = true
       }
       // 네이티브 EventSource 는 Last-Event-ID 를 유지한 채 재연결한다. 기존 숫자는 '마지막 관측값'으로 남긴다.
       stream.onerror = () => {
-        if (!this.closed) this.onConnection('reconnecting')
+        if (!this.closed) this.setConn('reconnecting')
       }
     } else {
-      this.onConnection('polling')
+      this.setConn('polling')
     }
     // SSE 연결 중의 polling 은 복구용 재조회이며, EventSource 미지원 환경에서는 상태 갱신 주기다.
     this.pollTimer = setInterval(() => {
       if (this.pollInFlight) return
       this.pollInFlight = true
       this.readStatus()
-        .catch((error) => {
-          if (!this.closed) {
-            this.onConnection('offline')
-            this.onError(toError(error))
+        .then(() => {
+          // 이전 polling 실패로 offline 이었다면 현재 전송 방식에 맞는 상태로 복구한다.
+          if (!this.closed && this.conn === 'offline') {
+            this.setConn(this.stream ? (this.streamOpen() ? 'connected' : 'reconnecting') : 'polling')
           }
+        })
+        .catch((error) => {
+          if (this.closed) return
+          // SSE 가 열려 있으면 REST 복구 조회 실패만으로 연결 끊김으로 표시하지 않는다.
+          if (!this.streamOpen()) this.setConn('offline')
+          this.onError(toError(error))
         })
         .finally(() => {
           this.pollInFlight = false
@@ -365,6 +382,6 @@ export class Client {
     if (this.historyTimer !== null) clearTimeout(this.historyTimer)
     this.historyTimer = null
     for (const controller of this.controllers) controller.abort()
-    this.onConnection('closed')
+    this.setConn('closed')
   }
 }

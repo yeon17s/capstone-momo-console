@@ -9,11 +9,11 @@ interface MetricsState {
 }
 
 /**
- * `/metrics` 조회. 회차·경보·확인 라벨 등 History 지문이 바뀔 때만 다시 읽는다(센서 갱신마다 읽지 않음).
+ * `/metrics` 조회. 회차·경보·확인 라벨 등 History 지문이 바뀌거나 SSE reset/gap/재연결로 전체 재조회가 일어날 때만 다시 읽는다(센서 갱신마다 읽지 않음).
  * 조회 실패 시 마지막 성공 값은 유지하되 오류를 함께 반환한다. 오류를 0이나 정상으로 바꾸지 않는다.
  */
 export function useMetrics(query: MetricsQuery = {}) {
-  const { client, status } = useApi()
+  const { client, status, refreshCount } = useApi()
   const [state, setState] = useState<MetricsState>({ data: null, error: null })
   const revision = historyRevision(status)
   const queryKey = JSON.stringify(query)
@@ -32,7 +32,7 @@ export function useMetrics(query: MetricsQuery = {}) {
     return () => {
       cancelled = true
     }
-  }, [client, revision, queryKey])
+  }, [client, revision, refreshCount, queryKey])
 
   return client ? state : { data: null, error: null }
 }

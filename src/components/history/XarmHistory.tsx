@@ -24,7 +24,7 @@ function message(e: unknown): string {
 }
 
 export function XarmHistory() {
-  const { client, cycles } = useApi()
+  const { client, cycles, connection } = useApi()
   const [filters, setFilters] = useState<XarmFilterState>(EMPTY_FILTERS)
   const [offset, setOffset] = useState(0)
   const [limit, setLimit] = useState(25)
@@ -100,6 +100,11 @@ export function XarmHistory() {
       <p className="section-intro">
         서버가 저장한 기록입니다. 최신 수집 시각 순이며, 서버 연결이 현재 운전 중이라는 뜻은 아닙니다.
       </p>
+      {(connection === 'reconnecting' || connection === 'offline') && (
+        <AsyncState kind="stale">
+          서버와 연결이 끊겼습니다. 표시된 목록은 마지막으로 읽은 값이며 재연결되면 같은 필터로 다시 조회합니다.
+        </AsyncState>
+      )}
       <XarmHistoryFilters
         filters={filters}
         onChange={patchFilters}

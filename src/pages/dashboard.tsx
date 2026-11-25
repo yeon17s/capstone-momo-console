@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { DB } from '../data/db'
 import { useSource } from '../context/SourceContext'
-import { XarmPending } from '../components/layout/XarmPending'
 import { useModel } from '../context/ModelContext'
 import { uniq } from '../lib/format'
 import { findModel } from '../lib/selectors'
@@ -11,6 +10,7 @@ import {
   ModelMetrics,
   OverviewKpis,
   VisualSummary,
+  XarmDashboard,
 } from '../components/dashboard'
 
 function PublicDashboard() {
@@ -38,5 +38,5 @@ function PublicDashboard() {
 
 export default function DashboardPage() {
   const { mode } = useSource()
-  return mode === 'public' ? <PublicDashboard /> : <XarmPending />
+  return mode === 'public' ? <PublicDashboard /> : <XarmDashboard />
 }

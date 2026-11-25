@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { useSource } from '../context/SourceContext'
-import { XarmPending } from '../components/layout/XarmPending'
 import { useModel } from '../context/ModelContext'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { exportHistoryCsv } from '../lib/exportCsv'
@@ -8,7 +7,13 @@ import { num } from '../lib/format'
 import { evaluationRows } from '../lib/selectors'
 import type { CycleRow } from '../types'
 import { Card, Notice } from '../components/common'
-import { HistoryFilters, HistoryTable, Pager, type HistoryFilterState } from '../components/history'
+import {
+  HistoryFilters,
+  HistoryTable,
+  Pager,
+  XarmHistory,
+  type HistoryFilterState,
+} from '../components/history'
 
 const PAGE_SIZE = 25
 
@@ -99,5 +104,5 @@ function PublicHistory() {
 
 export default function HistoryPage() {
   const { mode } = useSource()
-  return mode === 'public' ? <PublicHistory /> : <XarmPending />
+  return mode === 'public' ? <PublicHistory /> : <XarmHistory />
 }

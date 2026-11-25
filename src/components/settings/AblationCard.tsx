@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DB } from '../../data/db'
+import { RESEARCH } from '../../data/research'
 import { num, pct, uniq } from '../../lib/format'
 import { Card, SelectField, Table } from '../common'
 
@@ -8,7 +8,7 @@ export function AblationCard() {
   const [alg, setAlg] = useState('statistical')
   const [combo, setCombo] = useState('')
 
-  const rows = DB.groups.filter(
+  const rows = RESEARCH.groups.filter(
     (r) => r.representation === rep && r.algorithm === alg && (!combo || r.combination === combo),
   )
 
@@ -19,12 +19,12 @@ export function AblationCard() {
         G0 전류·전압 / G1 위치 / G2 속도 / G3 위치오차 / G4 속도오차 / G5 관절 iq
       </p>
       <div className="subtools">
-        <SelectField label="평가 단위" value={rep} options={uniq(DB.groups, 'representation')} onChange={setRep} />
-        <SelectField label="알고리즘" value={alg} options={uniq(DB.groups, 'algorithm')} onChange={setAlg} />
+        <SelectField label="평가 단위" value={rep} options={uniq(RESEARCH.groups, 'representation')} onChange={setRep} />
+        <SelectField label="알고리즘" value={alg} options={uniq(RESEARCH.groups, 'algorithm')} onChange={setAlg} />
         <SelectField
           label="조합"
           value={combo}
-          options={uniq(DB.groups, 'combination')}
+          options={uniq(RESEARCH.groups, 'combination')}
           onChange={setCombo}
           emptyLabel="모든 조합"
         />

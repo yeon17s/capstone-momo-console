@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DB } from '../../data/db'
+import { RESEARCH } from '../../data/research'
 import { num, pct, uniq } from '../../lib/format'
 import { Card, Notice, SelectField, Table } from '../common'
 
@@ -11,19 +11,19 @@ export function ImportanceCard() {
   const match = (r: { protocol: string; algorithm: string; input_set: string }) =>
     r.protocol === protocol && r.algorithm === alg && r.input_set === input
 
-  const importance = DB.importance
+  const importance = RESEARCH.importance
     .filter(match)
     .sort((a, b) => (b.mean_importance ?? -Infinity) - (a.mean_importance ?? -Infinity))
     .slice(0, 20)
 
-  const topk = DB.topk
+  const topk = RESEARCH.topk
     .filter(match)
     .sort(
       (a, b) =>
         (a.k === 'all' ? Infinity : Number(a.k)) - (b.k === 'all' ? Infinity : Number(b.k)),
     )
 
-  const oof = DB.oof.filter(match)
+  const oof = RESEARCH.oof.filter(match)
 
   return (
     <Card style={{ marginTop: '18px' }}>
@@ -32,9 +32,9 @@ export function ImportanceCard() {
         Baseline과 학습·분할·임계값이 달라 결과를 직접 비교할 수 없습니다.
       </Notice>
       <div className="subtools">
-        <SelectField label="protocol" value={protocol} options={uniq(DB.importance, 'protocol')} onChange={setProtocol} />
-        <SelectField label="algorithm" value={alg} options={uniq(DB.importance, 'algorithm')} onChange={setAlg} />
-        <SelectField label="input_set" value={input} options={uniq(DB.importance, 'input_set')} onChange={setInput} />
+        <SelectField label="protocol" value={protocol} options={uniq(RESEARCH.importance, 'protocol')} onChange={setProtocol} />
+        <SelectField label="algorithm" value={alg} options={uniq(RESEARCH.importance, 'algorithm')} onChange={setAlg} />
+        <SelectField label="input_set" value={input} options={uniq(RESEARCH.importance, 'input_set')} onChange={setInput} />
       </div>
 
       <h3>불순도 감소 중요도 · MDI</h3>

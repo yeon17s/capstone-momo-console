@@ -1,5 +1,6 @@
 import {
   AblationCard,
+  AlignedTimeseriesCard,
   DeviceNoticeCard,
   ExperimentCard,
   ImportanceCard,
@@ -14,6 +15,7 @@ export default function PublicSettings() {
         <ExperimentCard />
         <DeviceNoticeCard />
       </div>
+      <AlignedTimeseriesCard />
       <AblationCard />
       <ImportanceCard />
     </section>

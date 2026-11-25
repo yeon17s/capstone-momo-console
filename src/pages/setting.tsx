@@ -1,11 +1,13 @@
+import { useSource } from '../context/SourceContext'
 import {
   AblationCard,
   DeviceNoticeCard,
   ExperimentCard,
   ImportanceCard,
+  XarmSettings,
 } from '../components/settings'
 
-export default function SettingPage() {
+function PublicSettings() {
   return (
     <section aria-label="설정 및 분석 확장">
       <h2>읽기 전용 실험 설정</h2>
@@ -18,4 +20,9 @@ export default function SettingPage() {
       <ImportanceCard />
     </section>
   )
+}
+
+export default function SettingPage() {
+  const { mode } = useSource()
+  return mode === 'public' ? <PublicSettings /> : <XarmSettings />
 }

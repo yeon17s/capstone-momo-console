@@ -6,7 +6,6 @@ import { Footer } from './Footer'
 import { Header } from './Header'
 import { ModelToolbar } from './ModelToolbar'
 import { SourceSwitch } from './SourceSwitch'
-import { XarmPending } from './XarmPending'
 
 export function AppLayout() {
   const { pathname } = useLocation()
@@ -35,15 +34,9 @@ export function AppLayout() {
           </div>
         </div>
         <SourceSwitch />
-        {isPublic ? (
-          <>
-            <ModelToolbar />
-            <Outlet />
-            <ComparePanel />
-          </>
-        ) : (
-          <XarmPending />
-        )}
+        {isPublic && <ModelToolbar />}
+        <Outlet />
+        {isPublic && <ComparePanel />}
         <Footer />
       </main>
     </>

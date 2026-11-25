@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { useSource } from '../context/SourceContext'
+import { XarmPending } from '../components/layout/XarmPending'
 import { useModel } from '../context/ModelContext'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { exportHistoryCsv } from '../lib/exportCsv'
@@ -31,7 +33,7 @@ function filterRows(base: CycleRow[], f: HistoryFilterState): CycleRow[] {
   })
 }
 
-export default function HistoryPage() {
+function PublicHistory() {
   const { model } = useModel()
   const [filters, setFilters] = useState<HistoryFilterState>({
     search: '',
@@ -93,4 +95,9 @@ export default function HistoryPage() {
       </Notice>
     </section>
   )
+}
+
+export default function HistoryPage() {
+  const { mode } = useSource()
+  return mode === 'public' ? <PublicHistory /> : <XarmPending />
 }

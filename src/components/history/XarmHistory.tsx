@@ -9,6 +9,7 @@ import {
 import type { CsvInfo } from '../../types/api'
 import { AsyncState, Card, Notice } from '../common'
 import { Pager } from './Pager'
+import { XarmCompare } from './XarmCompare'
 import { XarmHistoryFilters } from './XarmHistoryFilters'
 import { XarmHistoryTable } from './XarmHistoryTable'
 
@@ -28,6 +29,8 @@ export function XarmHistory() {
   const [offset, setOffset] = useState(0)
   const [limit, setLimit] = useState(25)
   const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState<string[]>([])
+  const [selectMessage, setSelectMessage] = useState('')
   const [csv, setCsv] = useState<{ key: string; state: CsvState }>({ key: '', state: { phase: 'idle' } })
   const [applied, setApplied] = useState<{ key: string; error: string | null }>({ key: '', error: null })
 
@@ -49,6 +52,18 @@ export function XarmHistory() {
   const patchFilters = (patch: Partial<XarmFilterState>) => {
     setFilters((f) => ({ ...f, ...patch }))
     setOffset(0)
+  }
+
+  const toggle = (id: string) => {
+    if (selected.includes(id)) {
+      setSelected(selected.filter((x) => x !== id))
+      setSelectMessage('')
+    } else if (selected.length >= 2) {
+      setSelectMessage('최대 2개까지 비교할 수 있습니다. 기존 항목 하나를 닫은 뒤 추가하세요.')
+    } else {
+      setSelected([...selected, id])
+      setSelectMessage('')
+    }
   }
 
   const csvState: CsvState = csv.key === queryKey ? csv.state : { phase: 'idle' }
@@ -117,7 +132,7 @@ export function XarmHistory() {
                 </button>
               </AsyncState>
             ) : (
-              <XarmHistoryTable items={shown} />
+              <XarmHistoryTable items={shown} selected={selected} onToggle={toggle} />
             )}
             {q && (
               <p className="caption">
@@ -137,6 +152,19 @@ export function XarmHistory() {
           전체 검색·점수 정렬은 제공하지 않습니다.
         </p>
       </Card>
+
+      {selectMessage && (
+        <p role="status" aria-live="polite">
+          {selectMessage}
+        </p>
+      )}
+      <XarmCompare
+        ids={selected}
+        onRemove={(id) => {
+          setSelected(selected.filter((x) => x !== id))
+          setSelectMessage('')
+        }}
+      />
 
       <Card style={{ marginTop: '18px' }}>
         <h3>CSV 저장 (같은 필터 전체)</h3>

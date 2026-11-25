@@ -11,7 +11,13 @@ function confirmedLabel(c: Cycle): string {
   return v === true ? '확인됨' : v === false ? '미확정' : '미제공'
 }
 
-export function XarmHistoryTable({ items }: { items: Cycle[] }) {
+interface Props {
+  items: Cycle[]
+  selected: string[]
+  onToggle: (id: string) => void
+}
+
+export function XarmHistoryTable({ items, selected, onToggle }: Props) {
   return (
     <Table
       headers={[
@@ -25,6 +31,7 @@ export function XarmHistoryTable({ items }: { items: Cycle[] }) {
         '보조 추정',
         '모델 프로필',
         '자료 종류',
+        '상세',
       ]}
       rows={items.map((c) => {
         const alarm = c.detectors?.combined?.alarm
@@ -49,6 +56,9 @@ export function XarmHistoryTable({ items }: { items: Cycle[] }) {
             )}
           </span>,
           text(c.data_kind),
+          <button key="o" type="button" aria-pressed={selected.includes(c.id)} onClick={() => onToggle(c.id)}>
+            {selected.includes(c.id) ? '닫기' : '열기'}
+          </button>,
         ]
       })}
     />

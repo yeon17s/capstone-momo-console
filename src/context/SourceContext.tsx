@@ -3,14 +3,15 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
 /** 화면 데이터 소스. 서로 섞어 표시하지 않는다. */
 export type SourceMode = 'public' | 'xarm-history' | 'xarm-live'
 
-interface SourceContextValue {
+export interface SourceContextValue {
   mode: SourceMode
   setMode: (mode: SourceMode) => void
   /** xArm API(/api/v1)를 사용하는 모드인지 */
   usesApi: boolean
 }
 
-const SourceContext = createContext<SourceContextValue | null>(null)
+/** 테스트에서 값을 직접 주입하기 위해 export 한다. */
+export const SourceContext = createContext<SourceContextValue | null>(null)
 
 export function SourceProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<SourceMode>('public')

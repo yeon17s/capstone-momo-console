@@ -48,7 +48,7 @@ export function drawDistribution(
 ) {
   const L = 50
   const R = 18
-  const T = 35
+  const T = 44
   const B = 245
   const pw = w - L - R
   const ph = B - T
@@ -92,8 +92,9 @@ export function drawDistribution(
   c.stroke()
   c.restore()
   c.fillStyle = COLORS.strong
-  c.textAlign = 'center'
-  c.fillText(num(threshold, 5), tx, T - 13)
+  // '건수' 는 y=14 에 있으므로 임계값 라벨은 한 줄 아래(T-8)에 두고, 가장자리에서는 정렬을 바꿔 잘리지 않게 한다.
+  c.textAlign = tx < L + 36 ? 'left' : tx > w - R - 36 ? 'right' : 'center'
+  c.fillText(num(threshold, 5), tx, T - 8)
 
   for (let i = 0; i <= 4; i++) {
     c.textAlign = i === 0 ? 'left' : i === 4 ? 'right' : 'center'

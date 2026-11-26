@@ -6,8 +6,12 @@ import { COLORS } from '../../lib/charts'
 const PALETTE = ['#4D86E8', '#D96B2A', '#6CC59B', '#E0B64A', '#B58CE8', '#E86C8E']
 const HEIGHT = 260
 
-function tick(v: number): string {
-  return Math.abs(v) >= 1000 || (Math.abs(v) < 0.01 && v !== 0) ? v.toExponential(1) : String(Number(v.toPrecision(4)))
+/** 눈금 간격(step)에 맞는 소수 자릿수로만 표기한다. 부동소수 잡음(0.9499 등)이 눈금에 나오지 않게 한다. */
+function tick(v: number, step: number): string {
+  if (Math.abs(v) >= 1e5 || (v !== 0 && Math.abs(v) < 1e-3 && step < 1e-3)) return v.toExponential(1)
+  const decimals = Math.min(6, Math.max(0, Math.ceil(-Math.log10(step) - 1e-9)))
+  const s = v.toFixed(decimals)
+  return Number(s) === 0 ? (0).toFixed(decimals) : s
 }
 
 /** 값이 null 인 지점에서 선을 끊는 라인 차트. 결측 구간을 이어 그리지 않는다. */
@@ -47,12 +51,12 @@ export function LineChart({ lines, xLabel, label }: { lines: Line[]; xLabel: str
         c.moveTo(L, Y(v))
         c.lineTo(w - R, Y(v))
         c.stroke()
-        c.fillText(tick(v), L - 6, Y(v) + 4)
+        c.fillText(tick(v, (y1 - y0) / 4), L - 6, Y(v) + 4)
       }
       c.textAlign = 'center'
       for (let i = 0; i <= 4; i++) {
         const t = x0 + ((x1 - x0) * i) / 4
-        c.fillText(tick(t), X(t), B + 16)
+        c.fillText(tick(t, (x1 - x0) / 4), X(t), B + 16)
       }
       c.fillText(xLabel, (L + w - R) / 2, h - 6)
 

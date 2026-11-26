@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "stub",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "stub"],
+      "port": 8787
+    },
+    {
+      "name": "dev-stub",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["VITE_API_TARGET=http://localhost:8787", "npx", "vite", "--port", "5179", "--strictPort"],
+      "port": 5179
+    }
+  ]
+}
